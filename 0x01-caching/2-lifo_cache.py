@@ -6,55 +6,37 @@ from base_caching import BaseCaching
 
 class LIFOCache(BaseCaching):
     """
-    LIFOCache defines a Last-In-First-Out (LIFO) caching system.
+    FIFOCache defines a FIFO caching system
     """
 
     def __init__(self):
         """
-        Initializes the LIFOCache class by calling the parent class's __init__ method.
-        It also initializes an empty list to keep track of the order of keys in the cache.
+        Initialize the class with the parent's init method
         """
         super().__init__()
-        self.key_order = []
+        self.order = []
 
     def put(self, key, item):
         """
-        Caches a key-value pair in the cache.
-
-        Args:
-            key: The key to cache.
-            item: The value associated with the key.
+        Cache a key-value pair
         """
         if key is None or item is None:
-            # If either key or item is None, do nothing.
-            return
+            pass
         else:
-            cache_size = len(self.cache_data)
-            if cache_size >= BaseCaching.MAX_ITEMS and key not in self.cache_data:
-                # If the cache is full and the new key is not already in the cache, remove the most recently added item.
-                last_added_key = self.key_order[-1]
-                print("DISCARD: {}".format(last_added_key))
-                del self.cache_data[last_added_key]
-                del self.key_order[-1]
-            if key in self.key_order:
-                # If the key is already in the cache, remove it from the current position.
-                del self.key_order[self.key_order.index(key)]
-            self.key_order.append(key)
+            length = len(self.cache_data)
+            if length >= BaseCaching.MAX_ITEMS and key not in self.cache_data:
+                print("DISCARD: {}".format(self.order[-1]))
+                del self.cache_data[self.order[-1]]
+                del self.order[-1]
+            if key in self.order:
+                del self.order[self.order.index(key)]
+            self.order.append(key)
             self.cache_data[key] = item
 
     def get(self, key):
         """
-        Retrieves the value associated with a given key from the cache.
-
-        Args:
-            key: The key to retrieve the value for.
-
-        Returns:
-            The value associated with the key, or None if the key is None or doesn't exist in the cache.
+        Return the value linked to a given key, or None
         """
-        if key is not None and key in self.cache_data:
-            # If the key exists in the cache_data dictionary, return the corresponding value.
+        if key is not None and key in self.cache_data.keys():
             return self.cache_data[key]
-        else:
-            # If the key is None or doesn't exist in the cache, return None.
-            return None
+        return None
